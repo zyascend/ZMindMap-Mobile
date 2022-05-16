@@ -1,9 +1,15 @@
 import * as React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Navigate, Outlet } from 'react-router-dom'
+
+import useUserStore from '@/store/useUserStore'
 
 import styles from './index.module.less'
 
 function Layout() {
+  const token = useUserStore(state => state.token)
+  if (!token) {
+    return <Navigate to="/login" />
+  }
   return (
     <div className={styles.main}>
       <div className={styles.footer}>
