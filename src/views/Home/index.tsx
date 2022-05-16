@@ -1,9 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 // import cls from './index.module.less'
 function Home() {
   return (
     <div>
       <h2>Home</h2>
+      <Link to="/edit/123123">编辑页</Link>
     </div>
   )
 }
