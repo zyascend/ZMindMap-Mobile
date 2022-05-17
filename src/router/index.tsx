@@ -1,5 +1,5 @@
 import React from 'react'
-import type { RouteObject } from 'react-router-dom'
+import { Navigate, RouteObject } from 'react-router-dom'
 
 import FullScreenLoading from '@/components/FullScreenLoading'
 import Layout from '@/components/Layout'
@@ -14,11 +14,16 @@ const Edit = React.lazy(() => import('@/views/Edit'))
 const routes: RouteObject[] = [
   {
     path: '/',
+    element: <Navigate to="/folder" replace />,
+  },
+  {
+    path: '/folder',
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      { path: '/recent', element: <Recent /> },
-      { path: '/user', element: <User /> },
+      { path: '/folder/recent', element: <Recent /> },
+      { path: '/folder/user', element: <User /> },
+      { path: '/folder/:id', element: <Home /> },
     ],
   },
   {

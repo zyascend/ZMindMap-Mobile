@@ -9,7 +9,7 @@
     "postinstall": "husky install",
     "commitlint": "commitlint --from=master",
     "lint:fix": "eslint --cache --ext .js,.jsx,.ts,.tsx --no-error-on-unmatched-pattern --quiet --fix ./src",
-    "lint:style": "stylelint **/*.{less,css,scss}  --fix",
+    "lint:style": "stylelint **/*.{less,css,scss,css}  --fix",
     "stylelint-check": "stylelint-config-prettier-check"
   },
   "lint-staged": {
@@ -17,12 +17,13 @@
       "npm run lint:fix",
       "git add --force"
     ],
-    "**/*.{less}": [
+    "**/*.{less,css}": [
       "npm run lint:style",
       "git add --force"
     ]
   },
   "dependencies": {
+    "antd-mobile": "^5.12.3",
     "axios": "^0.27.2",
     "js-md5": "^0.7.3",
     "react": "^18.0.0",

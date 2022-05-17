@@ -1,29 +1,32 @@
+import { Button } from 'antd-mobile'
 import md5 from 'js-md5'
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import useUserStore from '@/store/useUserStore'
 
 function Login() {
   const user = useUserStore(state => state.user)
   const login = useUserStore(state => state.login)
-  useEffect(() => {
-    console.log('useEffect')
-    const dd = async () => {
-      await login({
-        isLogin: true,
-        data: {
-          email: 'zyascend@qq.com',
-          pwd: md5('111111'),
-        },
-      })
+  const navigate = useNavigate()
+  const submitLogin = async () => {
+    const success = await login({
+      isLogin: true,
+      data: {
+        email: 'zyascend@qq.com',
+        pwd: md5('111111'),
+      },
+    })
+    if (success) {
+      navigate('/', { replace: true })
     }
-    dd()
-  }, [])
+  }
   return (
     <div>
       <p>Login: {JSON.stringify(user)} </p>
-      <Link to="/">Home</Link>
+      <Button color="primary" onClick={submitLogin}>
+        登录
+      </Button>
     </div>
   )
 }

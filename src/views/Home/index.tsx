@@ -1,15 +1,44 @@
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
-// import cls from './index.module.less'
+import { PullToRefresh } from 'antd-mobile'
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+
+import useDocStore, { Doc } from '@/store/useDocStore'
+
+import styles from './index.module.less'
+type FolderParams = {
+  id: string
+}
 function Home() {
+  const params = useParams<FolderParams>()
+  const getDocsById = useDocStore(state => state.getDocsById)
+  const fetchAllDocs = useDocStore(state => state.fetchAllDocs)
+  const docs = useDocStore(state => state.docs)
+  const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(
+    getDocsById(params.id || '0'),
+  )
+
   useEffect(() => {
-    console.log('home effect')
+    fetchAllDocs()
   }, [])
+  useEffect(() => {
+    setDocsToRender(getDocsById(params.id || '0'))
+  }, [docs, params])
+
+  const renderDocs = () => {
+    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
+    return docsToRender.map(doc => (
+      <Link to={`/${'folderType' in doc ? 'folder' : 'edit'}/${doc.id}`} key={doc.id}>
+        <div className={styles.item}>
+          {'folderType' in doc ? '[文件夹]' : '[文件]'} - {doc.name}
+        </div>
+      </Link>
+    ))
+  }
+
   return (
-    <div>
-      <h2>Home</h2>
-      <Link to="/edit/123123">编辑页</Link>
-    </div>
+    <PullToRefresh onRefresh={fetchAllDocs}>
+      <div className={styles.listContainer}>{renderDocs()}</div>
+    </PullToRefresh>
   )
 }
 export default Home

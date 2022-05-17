@@ -17,6 +17,7 @@ export interface LoginPayload {
     pwd: string
   }
 }
+const STORE_STORAGE_KEY = 's-user'
 /* eslint-disable no-unused-vars */
 interface UserStoreProps {
   token: string | undefined
@@ -25,7 +26,8 @@ interface UserStoreProps {
   getUser: () => User | undefined
   setToken: (token: string) => void
   setUser: (user: User) => void
-  login: (payload: LoginPayload) => void
+  login: (payload: LoginPayload) => Promise<boolean>
+  logout: () => void
 }
 
 // 创建 store
@@ -43,9 +45,8 @@ const useStore = create<UserStoreProps>()(
         setUser: user => {
           set({ user })
         },
-        login: async (payload: LoginPayload) => {
+        login: async (payload: LoginPayload): Promise<boolean> => {
           const { isLogin, data } = payload
-          console.log(payload)
           const res = await useHttp<{ token: string; user: User }>(
             isLogin ? API.login : API.register,
             {
@@ -53,12 +54,17 @@ const useStore = create<UserStoreProps>()(
               data,
             },
           )
-          if (!res) return
+          if (!res) return false
           const { token, user } = res
           set({ token, user })
+          return true
+        },
+        logout: () => {
+          set({ user: undefined, token: undefined })
+          localStorage.clear()
         },
       }),
-      { name: 's-user' },
+      { name: STORE_STORAGE_KEY },
     ),
   ),
 )
