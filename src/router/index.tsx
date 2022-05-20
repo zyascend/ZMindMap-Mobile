@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, RouteObject } from 'react-router-dom'
 
-import FullScreenLoading from '@/components/FullScreenLoading'
+import { FullPageLoading } from '@/components/FullPageFallback'
 import Layout from '@/components/Layout'
 import Home from '@/views/Home'
 import NoMatch from '@/views/NoMatch'
@@ -29,7 +29,7 @@ const routes: RouteObject[] = [
   {
     path: '/edit/:id',
     element: (
-      <React.Suspense fallback={<FullScreenLoading />}>
+      <React.Suspense fallback={<FullPageLoading />}>
         <Edit />
       </React.Suspense>
     ),
@@ -37,7 +37,7 @@ const routes: RouteObject[] = [
   {
     path: '/login',
     element: (
-      <React.Suspense fallback={<FullScreenLoading />}>
+      <React.Suspense fallback={<FullPageLoading />}>
         <Login />
       </React.Suspense>
     ),

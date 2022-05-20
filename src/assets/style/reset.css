@@ -27,8 +27,8 @@ html {
     font-size: 12px;
     color: #666;
 
-    /* 避免 300ms 的点击延迟 */
-    touch-action: manipulation;
+    /* 避免 300ms 的点击延迟
+    touch-action: manipulation; */
 }
 
 body {
