@@ -1,7 +1,8 @@
 import { PullToRefresh } from 'antd-mobile'
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
+import DocItem from '@/components/DocListItem'
 import useDocStore, { Doc } from '@/store/useDocStore'
 
 import styles from './index.module.less'
@@ -26,13 +27,7 @@ function Home() {
 
   const renderDocs = () => {
     if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
-    return docsToRender.map(doc => (
-      <Link to={`/${'folderType' in doc ? 'folder' : 'edit'}/${doc.id}`} key={doc.id}>
-        <div className={styles.item}>
-          {'folderType' in doc ? '[文件夹]' : '[文件]'} - {doc.name}
-        </div>
-      </Link>
-    ))
+    return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
   }
 
   return (

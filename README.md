@@ -39,12 +39,12 @@
 - 安装依赖
 
   ```bash
-  npm install
+  yarn
   ```
 
 - 运行
   ```bash
-  npm run serve
+  yarn run dev
   ```
 ## 效果图
 

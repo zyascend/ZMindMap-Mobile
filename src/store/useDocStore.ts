@@ -24,6 +24,7 @@ interface DocRes {
 interface DocStoreProps {
   docs: DocRes | undefined
   getDocsById: (folderId: string) => Doc[] | undefined
+  getDocsByDate: () => Doc[] | undefined
   fetchAllDocs: () => Promise<any>
 }
 
@@ -38,6 +39,10 @@ const useStore = create<DocStoreProps>()(
           if (!folderId || !all) return undefined
           const sourceList = [...all.folders, ...all.documents]
           return sourceList.filter(doc => doc.folderId === folderId)
+        },
+        getDocsByDate: () => {
+          const all_doc = get().docs?.documents
+          return all_doc?.sort((a, b) => b.updateTime - a.updateTime)
         },
         fetchAllDocs: async () => {
           console.log('fetchAllDocs...')

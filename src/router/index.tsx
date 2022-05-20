@@ -14,16 +14,16 @@ const Edit = React.lazy(() => import('@/views/Edit'))
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/folder" replace />,
+    element: <Navigate to="/app" replace />,
   },
   {
-    path: '/folder',
+    path: '/app',
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      { path: '/folder/recent', element: <Recent /> },
-      { path: '/folder/user', element: <User /> },
-      { path: '/folder/:id', element: <Home /> },
+      { path: '/app/recent', element: <Recent /> },
+      { path: '/app/user', element: <User /> },
+      { path: '/app/:id', element: <Home /> },
     ],
   },
   {

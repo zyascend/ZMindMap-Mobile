@@ -13,13 +13,13 @@ function Layout() {
   return (
     <div className={styles.main}>
       <div className={styles.footer}>
-        <Link to="/folder" className={styles.tab}>
+        <Link to="/app" className={styles.tab}>
           文档
         </Link>
-        <Link to="/folder/recent" className={styles.tab}>
+        <Link to="/app/recent" className={styles.tab}>
           捷径
         </Link>
-        <Link to="/folder/user" className={styles.tab}>
+        <Link to="/app/user" className={styles.tab}>
           个人
         </Link>
       </div>
