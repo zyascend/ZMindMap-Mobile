@@ -25,6 +25,7 @@ interface DocStoreProps {
   docs: DocRes | undefined
   getDocsById: (folderId: string) => Doc[] | undefined
   getDocsByDate: () => Doc[] | undefined
+  getFolderNameById: (folderId: string) => string
   fetchAllDocs: () => Promise<any>
 }
 
@@ -39,6 +40,11 @@ const useStore = create<DocStoreProps>()(
           if (!folderId || !all) return undefined
           const sourceList = [...all.folders, ...all.documents]
           return sourceList.filter(doc => doc.folderId === folderId)
+        },
+        getFolderNameById: (folderId: string) => {
+          if (folderId === '0') return '所有文件'
+          const target = get().docs?.folders.find(item => item.id === folderId)
+          return target ? target.name : '所有文件'
         },
         getDocsByDate: () => {
           const all_doc = get().docs?.documents

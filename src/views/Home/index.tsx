@@ -1,4 +1,4 @@
-import { PullToRefresh } from 'antd-mobile'
+import { PullToRefresh, SafeArea } from 'antd-mobile'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -12,17 +12,21 @@ type FolderParams = {
 function Home() {
   const params = useParams<FolderParams>()
   const getDocsById = useDocStore(state => state.getDocsById)
+  const getFolderNameById = useDocStore(state => state.getFolderNameById)
   const fetchAllDocs = useDocStore(state => state.fetchAllDocs)
   const docs = useDocStore(state => state.docs)
+
   const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(
-    getDocsById(params.id || '0'),
+    getDocsById(params?.id || '0'),
   )
+  const [title, setTitle] = useState<string>('所有文档')
 
   useEffect(() => {
     fetchAllDocs()
   }, [])
   useEffect(() => {
-    setDocsToRender(getDocsById(params.id || '0'))
+    setDocsToRender(getDocsById(params?.id || '0'))
+    setTitle(getFolderNameById(params?.id || '0'))
   }, [docs, params])
 
   const renderDocs = () => {
@@ -31,9 +35,17 @@ function Home() {
   }
 
   return (
-    <PullToRefresh onRefresh={fetchAllDocs}>
-      <div className={styles.listContainer}>{renderDocs()}</div>
-    </PullToRefresh>
+    <div className={styles.main}>
+      <div className={styles.header}>
+        <SafeArea position="top" />
+        <div className={styles.headerContent}>
+          <h1>{title}</h1>
+        </div>
+      </div>
+      <PullToRefresh onRefresh={fetchAllDocs}>
+        <div className={styles.listContainer}>{renderDocs()}</div>
+      </PullToRefresh>
+    </div>
   )
 }
 export default Home

@@ -16,14 +16,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "types": ["vite-plugin-svg-icons/client"],
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     }
   },
-  "include": [
-    "src/",
-    "vite.config.ts",
-  ],
+  "include": ["src/", "vite.config.ts"],
   "exclude": ["node_modules", "build", "dist", "**/*.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

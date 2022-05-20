@@ -1,10 +1,15 @@
+import { ErrorBlock } from 'antd-mobile'
 import React from 'react'
 
+import SvgIcon from '@/components/SvgIcon'
+
 export const FullPageLoading: React.FC = () => {
-  return <div>loading</div>
+  return (
+    <div>
+      <SvgIcon name="loading" />
+    </div>
+  )
 }
 
 type ErrorNull = { error: Error | null }
-export const FullPageError: React.FC<ErrorNull> = ({ error }) => (
-  <div>出错啦： {error?.message}</div>
-)
+export const FullPageError: React.FC<ErrorNull> = () => <ErrorBlock fullPage />
