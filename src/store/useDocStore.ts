@@ -35,7 +35,7 @@ const useStore = create<DocStoreProps>()(
     persist(
       (set, get) => ({
         docs: undefined,
-        getDocsById: (folderId: string = '0') => {
+        getDocsById: (folderId = '0') => {
           const all = get().docs
           if (!folderId || !all) return undefined
           const sourceList = [...all.folders, ...all.documents]
@@ -51,10 +51,9 @@ const useStore = create<DocStoreProps>()(
           return all_doc?.sort((a, b) => b.updateTime - a.updateTime)
         },
         fetchAllDocs: async () => {
-          console.log('fetchAllDocs...')
           const user = useUserStore.getState().user
-          if (!user || !user._id) return
-          const url = `${API.getAllDocs}/${user._id}`
+          // if (!user || !user._id) return
+          const url = `${API.getAllDocs}/${user?._id}`
           const res = await useHttp<DocRes>(url)
           if (res) {
             set({ docs: res })
