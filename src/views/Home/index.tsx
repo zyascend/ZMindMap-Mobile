@@ -11,6 +11,7 @@ type FolderParams = {
 }
 function Home() {
   const params = useParams<FolderParams>()
+
   const getDocsById = useDocStore(state => state.getDocsById)
   const getFolderNameById = useDocStore(state => state.getFolderNameById)
   const fetchAllDocs = useDocStore(state => state.fetchAllDocs)
@@ -29,11 +30,6 @@ function Home() {
     setTitle(getFolderNameById(params?.id || '0'))
   }, [docs, params])
 
-  const renderDocs = () => {
-    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
-    return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
-  }
-
   return (
     <div className={styles.main}>
       <div className={styles.header}>
@@ -47,5 +43,10 @@ function Home() {
       </PullToRefresh>
     </div>
   )
+  // ? 自定义的函数放在 return 部分的后面
+  function renderDocs() {
+    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
+    return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
+  }
 }
 export default Home

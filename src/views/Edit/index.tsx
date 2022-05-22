@@ -16,6 +16,7 @@ function Edit() {
   const params = useParams<{ id: string }>()
   const fetchMap = useMapStore(state => state.fetchMap)
   const map = useMapStore(state => state.map)
+
   const [pageStatus, setPageStatus] = useState<PAGE_STATUS>(PAGE_STATUS.LOADING)
 
   useEffect(() => {
@@ -26,16 +27,6 @@ function Edit() {
       setPageStatus(PAGE_STATUS.ERROR)
     }
   }, [params])
-
-  const renderContent = () => {
-    if (pageStatus === PAGE_STATUS.ERROR) {
-      return <div>出错啦。。。</div>
-    }
-    if (pageStatus === PAGE_STATUS.LOADING) {
-      return <div>Loading...</div>
-    }
-    return <div>{map?.definition}</div>
-  }
 
   return (
     <div className={styles.main}>
@@ -48,5 +39,14 @@ function Edit() {
       {renderContent()}
     </div>
   )
+  function renderContent() {
+    if (pageStatus === PAGE_STATUS.ERROR) {
+      return <div>出错啦。。。</div>
+    }
+    if (pageStatus === PAGE_STATUS.LOADING) {
+      return <div>Loading...</div>
+    }
+    return <div>{map?.definition}</div>
+  }
 }
 export default Edit

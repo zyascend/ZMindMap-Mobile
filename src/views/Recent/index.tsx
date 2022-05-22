@@ -9,17 +9,18 @@ function Recent() {
   const getDocsByDate = useDocStore(state => state.getDocsByDate)
   const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(getDocsByDate())
 
-  const renderDocs = () => {
-    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
-    return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
-  }
-  const refreshDoc = async () => {
-    setDocsToRender(getDocsByDate())
-  }
   return (
     <PullToRefresh onRefresh={refreshDoc}>
       <div className={styles.listContainer}>{renderDocs()}</div>
     </PullToRefresh>
   )
+
+  function renderDocs() {
+    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
+    return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
+  }
+  async function refreshDoc() {
+    setDocsToRender(getDocsByDate())
+  }
 }
 export default Recent

@@ -6,10 +6,20 @@ import { useNavigate } from 'react-router-dom'
 import useUserStore from '@/store/useUserStore'
 
 function Login() {
+  const navigate = useNavigate()
+
   const user = useUserStore(state => state.user)
   const login = useUserStore(state => state.login)
-  const navigate = useNavigate()
-  const submitLogin = async () => {
+
+  return (
+    <div>
+      <p>Login: {JSON.stringify(user)} </p>
+      <Button color="primary" onClick={submitLogin}>
+        登录
+      </Button>
+    </div>
+  )
+  async function submitLogin() {
     const success = await login({
       isLogin: true,
       data: {
@@ -21,13 +31,5 @@ function Login() {
       navigate('/', { replace: true })
     }
   }
-  return (
-    <div>
-      <p>Login: {JSON.stringify(user)} </p>
-      <Button color="primary" onClick={submitLogin}>
-        登录
-      </Button>
-    </div>
-  )
 }
 export default Login

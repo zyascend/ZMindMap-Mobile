@@ -6,14 +6,10 @@ import useUserStore from '@/store/useUserStore'
 
 import styles from './index.module.less'
 
-const User: React.FC = () => {
+function User() {
   const user = useUserStore(state => state.user)
   const logout = useUserStore(state => state.logout)
   const navigate = useNavigate()
-  const onClickLogout = () => {
-    logout()
-    navigate('/login', { replace: true })
-  }
   return (
     <div className={styles.user}>
       <img src={user?.avatar} alt={user?.name} />
@@ -23,5 +19,9 @@ const User: React.FC = () => {
       </Button>
     </div>
   )
+  function onClickLogout() {
+    logout()
+    navigate('/login', { replace: true })
+  }
 }
 export default User
