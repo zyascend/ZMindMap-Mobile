@@ -29,7 +29,7 @@ const errorHandle = (status: number) => {
 }
 
 // 创建axios实例
-var instance = axios.create({
+const instance = axios.create({
   timeout: 1000 * 12,
   // TODO 如何动态获取域名？
   // baseURL: process.env.NODE_ENV === 'production' ? 'https://mapapi.kimjisoo.cn' : 'http://localhost:3003'

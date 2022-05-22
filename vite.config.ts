@@ -2,10 +2,19 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import postcsspxtoviewport from 'postcss-px-to-viewport'
 import { defineConfig } from 'vite'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+
+// import { svgBuilder } from './config/plugin/svg-sprite-loader'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+      symbolId: 'icon-[dir]-[name]',
+    }),
+  ],
   resolve: {
     alias: [
       { find: /^~/, replacement: path.resolve(__dirname, './') },
