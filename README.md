@@ -50,6 +50,15 @@
 
 
 ## Features
+- React Hooks + TypeScript 
+- ReactRouter v6 路由管理
+- zustand 状态管理
+- Eslint/Prettier/Stylelint/Commitlint/Husky 规范代码
+- Vite 构建
+
+- 移动端适配
+- AntDesign Mobile 组件库
+
 
 
 ## TODOs

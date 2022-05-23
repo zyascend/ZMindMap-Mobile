@@ -1,8 +1,10 @@
-import { PullToRefresh, SafeArea } from 'antd-mobile'
+import { PullToRefresh } from 'antd-mobile'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import DocItem from '@/components/DocListItem'
+import { FullPageEmpty } from '@/components/FullPageFallback'
+import { HomeHeader } from '@/components/Headers'
 import useDocStore, { Doc } from '@/store/useDocStore'
 
 import styles from './index.module.less'
@@ -32,20 +34,18 @@ function Home() {
 
   return (
     <div className={styles.main}>
-      <div className={styles.header}>
-        <SafeArea position="top" />
-        <div className={styles.headerContent}>
-          <h1>{title}</h1>
-        </div>
-      </div>
+      <HomeHeader title={title} showBack={!!params?.id} onMoreClick={onMoreAction} />
       <PullToRefresh onRefresh={fetchAllDocs}>
         <div className={styles.listContainer}>{renderDocs()}</div>
       </PullToRefresh>
     </div>
   )
   // ? 自定义的函数放在 return 部分的后面
+  function onMoreAction() {
+    console.log('onMoreAction')
+  }
   function renderDocs() {
-    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
+    if (!docsToRender || !docsToRender.length) return <FullPageEmpty />
     return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
   }
 }
