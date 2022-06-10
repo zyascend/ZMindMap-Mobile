@@ -25,6 +25,11 @@
   "dependencies": {
     "antd-mobile": "^5.12.3",
     "axios": "^0.27.2",
+    "d3-hierarchy": "^3.1.2",
+    "d3-selection": "^3.0.0",
+    "d3-shape": "^3.1.0",
+    "d3-transition": "^3.0.1",
+    "d3-zoom": "^3.0.0",
     "js-md5": "^0.7.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
