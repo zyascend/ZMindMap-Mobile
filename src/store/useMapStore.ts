@@ -26,6 +26,7 @@ export interface DefinitionNode {
     url: string
     width: number
   }
+  level?: number
   markerList?: string[]
   parent: string
 }
@@ -35,8 +36,8 @@ export interface MapDefinition {
 }
 
 export type TreeData = Omit<DefinitionNode, '_children' | 'children'> & {
-  _children: TreeData
-  children: TreeData
+  _children: TreeData[]
+  children: TreeData[]
 }
 
 type MapRenderNode = {
@@ -81,8 +82,10 @@ export type MapRenderData = {
 interface MapStoreProps {
   map: MapRes | undefined
   definition: MapDefinition | undefined
+  svgRef: SVGSVGElement | null
   fetchMap: (docId: string) => Promise<any>
   setRenderData: () => void
+  setSvgRef: (ref: SVGSVGElement | null) => void
 }
 
 // 创建 store
@@ -91,6 +94,7 @@ const useStore = create<MapStoreProps>()(
   devtools((set, get) => ({
     map: undefined,
     definition: undefined,
+    svgRef: null,
     fetchMap: async docId => {
       const user = useUserStore.getState().user
       const url = `${API.getDocContent}/${user?._id}/${docId}`
@@ -107,6 +111,10 @@ const useStore = create<MapStoreProps>()(
     },
     setRenderData: () => {
       console.log('format map')
+    },
+    setSvgRef: ref => {
+      console.log('setSvgRef >', ref)
+      set({ svgRef: ref })
     },
   })),
 )
