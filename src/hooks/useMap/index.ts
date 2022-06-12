@@ -1,7 +1,10 @@
+import { hierarchy } from 'd3-hierarchy'
 import { useEffect, useState } from 'react'
 
 import useMapStore, { MapDefinition, MapRenderData, TreeData } from '@/store/useMapStore'
 import { simpleDeepClone } from '@/utils'
+
+import { LogicTree } from './LogicTree'
 
 export const useMapData = () => {
   const definition = useMapStore(state => state.definition)
@@ -22,9 +25,10 @@ const getRenderData = (
   // 1. 转换 MapDefinition => TreeData
   const treeData = transform(definition)
   // 2. 计算 TreeData => RenderData
-  console.log(treeData, svgRef)
+  const hierarchyData = hierarchy(treeData)
+  const logicTree = new LogicTree(svgRef)
   // 3. 更新store
-  return {} as MapRenderData
+  return logicTree.create(hierarchyData)
 }
 /**
  * 平铺数据转为树形数据

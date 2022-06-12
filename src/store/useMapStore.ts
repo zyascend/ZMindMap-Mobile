@@ -40,44 +40,6 @@ export type TreeData = Omit<DefinitionNode, '_children' | 'children'> & {
   children: TreeData[]
 }
 
-type MapRenderNode = {
-  data: TreeData
-  children: MapRenderData[]
-  parent: MapRenderNode
-  multiline: string[]
-  depth: number
-  ch: number
-  cw: number
-  h: number
-  w: number
-  x: number
-  y: number
-  ih: number
-  iw: number
-  ix: number
-  iy: number
-  mh: number
-  mw: number
-  mx: number
-  my: number
-  outLineH: number
-  outLineOffset: number
-  outLineW: number
-  rectRadius: number
-  strokeWidth: number
-  th: number
-  tspanDy: number
-  tw: number
-  tx: number
-  ty: number
-  height: number
-}
-
-export type MapRenderData = {
-  nodes: MapRenderNode[]
-  path?: Array<{ data: string; id: string }>
-}
-
 /* eslint-disable no-unused-vars */
 interface MapStoreProps {
   map: MapRes | undefined
@@ -113,7 +75,6 @@ const useStore = create<MapStoreProps>()(
       console.log('format map')
     },
     setSvgRef: ref => {
-      console.log('setSvgRef >', ref)
       set({ svgRef: ref })
     },
   })),

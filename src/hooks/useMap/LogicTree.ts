@@ -1,6 +1,61 @@
-import { linkHorizontal } from 'd3-shape'
-export class TreeTable {
-  constructor(measureSvg) {
+import { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
+import { select } from 'd3-selection'
+import { Link, linkHorizontal } from 'd3-shape'
+
+import { TreeData } from '@/store/useMapStore'
+export type ExtraNodeInfo = {
+  multiline: string[]
+  ch: number
+  cw: number
+  h: number
+  w: number
+  x: number
+  y: number
+  ih: number
+  iw: number
+  ix: number
+  iy: number
+  mh: number
+  mw: number
+  mx: number
+  my: number
+  outLineH: number
+  outLineOffset: number
+  outLineW: number
+  rectRadius: number
+  strokeWidth: number
+  th: number
+  tspanDy: number
+  tw: number
+  tx: number
+  ty: number
+}
+export type MapRenderNode = HierarchyNode<TreeData> & ExtraNodeInfo
+export type XY = { x: number; y: number }
+export type XYLink = { source: XY; target: XY }
+export type MapRenderData = {
+  nodes: MapRenderNode[]
+  path?: Array<{ data: string; id: string }>
+}
+
+export class LogicTree {
+  measureSvg: SVGSVGElement
+  defaultWidth: number
+  maxWidth: number
+  defaultHeight: number
+  defaultRootHeight: number
+  padding: number
+  defaultMarkerHeight: number
+  defaultMarkerWidth: number
+  markerOverlap: number
+  textMarkersGap: number
+  gapY: number
+  gapX: number
+  rectRadius: number
+  strokeWidth: number
+  bézierCurveGenerator: Link<LogicTree, XYLink, XY>
+
+  constructor(measureSvg: SVGSVGElement) {
     this.measureSvg = measureSvg
     this.defaultWidth = 30
     this.maxWidth = 250
@@ -18,24 +73,24 @@ export class TreeTable {
     this.rectRadius = 5
     this.strokeWidth = 0
 
-    this.bézierCurveGenerator = linkHorizontal()
+    this.bézierCurveGenerator = linkHorizontal<LogicTree, XYLink, XY>()
       .x(d => d.x)
       .y(d => d.y)
   }
 
-  create(root) {
-    this.measureWidthAndHeight(root)
-    this.calculateXY(root)
-    const paths = this.calculatePath(root)
+  create(root: HierarchyNode<TreeData>): MapRenderData {
+    this.measureWidthAndHeight(root as MapRenderNode)
+    this.calculateXY(root as MapRenderNode)
+    const path = this.calculatePath(root as MapRenderNode)
     return {
-      paths,
-      nodes: root.descendants(),
+      path,
+      nodes: root.descendants() as MapRenderNode[],
     }
   }
 
-  measureWidthAndHeight(root) {
+  measureWidthAndHeight(root: MapRenderNode) {
     // 后续遍历 初步计算 父依赖于子
-    root.eachAfter(node => {
+    root.eachAfter((node: MapRenderNode) => {
       this.measureImageSize(node)
       this.measureTextSize(node)
       this.measureMarkers(node)
@@ -43,7 +98,7 @@ export class TreeTable {
     })
   }
 
-  measureImageSize(node) {
+  measureImageSize(node: MapRenderNode) {
     const { imgInfo } = node.data
     if (imgInfo) {
       node.iw = imgInfo.width
@@ -55,7 +110,7 @@ export class TreeTable {
     }
   }
 
-  measureTextSize(node) {
+  measureTextSize(node: MapRenderNode) {
     if (!this.measureSvg) {
       throw new Error('measureSvg undefined')
     }
@@ -66,7 +121,7 @@ export class TreeTable {
     // 根节点字大一点
     const fontSize = depth === 0 ? 16 : 14
     const lineHeight = fontSize + 2
-    const t = this.measureSvg.append('text')
+    const t = select(this.measureSvg).append('text')
     t.selectAll('tspan')
       .data([html])
       .enter()
@@ -74,7 +129,7 @@ export class TreeTable {
       .text(d => d)
       .attr('x', 0)
       .attr('style', `font-size:${fontSize}px;line-height:${lineHeight}px;`)
-    const { width, height } = t.node().getBBox()
+    const { width, height } = t.node()!.getBBox()
     t.remove()
 
     if (width < this.maxWidth) {
@@ -97,7 +152,7 @@ export class TreeTable {
     node.tspanDy = height
   }
 
-  measureMarkers(node) {
+  measureMarkers(node: MapRenderNode) {
     const {
       data: { markerList },
     } = node
@@ -111,7 +166,7 @@ export class TreeTable {
     node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
-  measureWH(node) {
+  measureWH(node: MapRenderNode) {
     node.rectRadius = this.rectRadius
     node.strokeWidth = this.strokeWidth
 
@@ -139,16 +194,17 @@ export class TreeTable {
     node.outLineH = node.ch - node.outLineOffset * 2
   }
 
-  findLastBrother(node) {
-    const brothers = node.parent.children
+  findLastBrother(node: MapRenderNode) {
+    const brothers = node?.parent?.children
     for (const index in brothers) {
-      if (node.data.id === brothers[index].data.id) {
-        return brothers[index - 1]
+      if (node.data.id === brothers[Number(index)].data.id) {
+        return brothers[Number(index) - 1]
       }
     }
+    return undefined
   }
 
-  calculateInnerXY(node) {
+  calculateInnerXY(node: MapRenderNode) {
     const { mw, th, mh, ch } = node
     node.mx = this.padding
     node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
@@ -159,8 +215,8 @@ export class TreeTable {
     node.iy = this.padding
   }
 
-  calculateXY(root) {
-    let lastNode
+  calculateXY(root: MapRenderNode) {
+    let lastNode: MapRenderNode | undefined
     // 前序遍历 计算X
     root.eachBefore(node => {
       this.calculateInnerXY(node)
@@ -170,13 +226,15 @@ export class TreeTable {
         lastNode = node
         return
       }
-      const { depth: lastDepth, cw, x } = lastNode
+      // if (!lastNode) return
+      const { depth: lastDepth, cw, x } = lastNode!
       if (depth === lastDepth) {
         node.x = x
       } else if (depth > lastDepth) {
         node.x = x + cw + this.gapX
       } else {
         const bro = this.findLastBrother(node)
+        if (!bro) return
         node.x = bro.x
       }
       lastNode = node
@@ -192,7 +250,8 @@ export class TreeTable {
       }
       const { depth: lastDepth, ch, y } = lastNode
       if (depth < lastDepth) {
-        const firstChild = node.children[0]
+        if (!node) return
+        const firstChild = node.children![0]
         node.y = firstChild.y + (y - firstChild.y + ch) / 2 - node.ch / 2
       } else {
         const bottom = this.findBottom(lastNode)
@@ -202,7 +261,7 @@ export class TreeTable {
     })
   }
 
-  findBottom(node) {
+  findBottom(node: MapRenderNode) {
     let bottom = node
     while (bottom?.children) {
       bottom = bottom.children[bottom.children.length - 1]
@@ -210,16 +269,16 @@ export class TreeTable {
     return bottom
   }
 
-  calculatePath(root) {
+  calculatePath(root: MapRenderNode) {
     const links = root.links()
     const paths = links.map(l => this.getPathData(l))
     return paths
   }
 
-  getPathData(link) {
+  getPathData(link: HierarchyLink<TreeData>) {
     const { source, target } = link
-    const { x: sx, y: sy, cw, ch: sh, id: sid } = source
-    const { x: tx, y: ty, ch, id: tid } = target
+    const { x: sx, y: sy, cw, ch: sh } = source as MapRenderNode
+    const { x: tx, y: ty, ch } = target as MapRenderNode
     // 生成从一个源点到目标点的光滑的三次贝塞尔曲线
     const bezierLine = this.bézierCurveGenerator({
       source: {
@@ -232,10 +291,10 @@ export class TreeTable {
       },
     })
     return {
-      data: bezierLine,
-      id: `path-${sid}-${tid}`,
+      data: bezierLine!,
+      id: `path-${source.data.id}-${target.data.id}`,
     }
   }
 }
 
-export default TreeTable
+export default LogicTree

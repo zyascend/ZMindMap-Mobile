@@ -2,6 +2,7 @@ import { SafeArea } from 'antd-mobile'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import MindMap from '@/components/MindMap'
 import useMapStore from '@/store/useMapStore'
 
 import styles from './index.module.less'
@@ -46,7 +47,7 @@ function Edit() {
     if (pageStatus === PAGE_STATUS.LOADING) {
       return <div>Loading...</div>
     }
-    return <div>{map?.definition}</div>
+    return <MindMap />
   }
 }
 export default Edit
