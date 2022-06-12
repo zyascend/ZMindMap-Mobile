@@ -35,17 +35,12 @@ export interface MapDefinition {
   [id: string]: DefinitionNode
 }
 
-export type TreeData = Omit<DefinitionNode, '_children' | 'children'> & {
-  _children: TreeData[]
-  children: TreeData[]
-}
-
 /* eslint-disable no-unused-vars */
 interface MapStoreProps {
   map: MapRes | undefined
   definition: MapDefinition | undefined
   svgRef: SVGSVGElement | null
-  fetchMap: (docId: string) => Promise<any>
+  fetchMap: (docId: string) => Promise<void>
   setRenderData: () => void
   setSvgRef: (ref: SVGSVGElement | null) => void
 }

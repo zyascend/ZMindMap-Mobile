@@ -7,8 +7,8 @@
   <a href="./LICENSE">
       <img src="https://img.shields.io/github/license/zyascend/ZMindMap" alt="MIT License" />
   </a>
-  <a href="https://v3.cn.vuejs.org/">
-      <img src="https://img.shields.io/badge/vue.js-3.2-green" alt="Vue3.2">
+  <a href="https://www.typescriptlang.org/">
+      <img src="https://img.shields.io/badge/TypeScript-4.6-blue" alt="TypeScript">
   </a>
   <a href="https://map.kimjisoo.cn">
       <img src="https://img.shields.io/badge/🚀-open--in--browser-blueviolet" alt="Live Demo">
@@ -50,14 +50,16 @@
 
 
 ## Features
-- React Hooks + TypeScript 
-- ReactRouter v6 路由管理
-- zustand 状态管理
-- Eslint/Prettier/Stylelint/Commitlint/Husky 规范代码
-- Vite 构建
+- React Hooks
+- TypeScript 
+- ReactRouter v6
+- zustand
+- Eslint/Prettier/Stylelint/Commitlint/Husky
+- Vite
+- d3.js
 
 - 移动端适配
-- AntDesign Mobile 组件库
+- AntDesign Mobile
 
 
 

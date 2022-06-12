@@ -1,35 +1,51 @@
-import { hierarchy } from 'd3-hierarchy'
 import { useEffect, useState } from 'react'
 
-import useMapStore, { MapDefinition, MapRenderData, TreeData } from '@/store/useMapStore'
+import useMapStore, { DefinitionNode, MapDefinition } from '@/store/useMapStore'
 import { simpleDeepClone } from '@/utils'
+import { Replace } from '@/utils/types'
+import zoomAndFit from '@/utils/zoom'
 
-import { LogicTree } from './LogicTree'
+import { LogicTree, MapRenderData } from './LogicTree'
+
+// export type TreeData = Omit<DefinitionNode, '_children' | 'children'> & {
+//   _children: TreeData[]
+//   children: TreeData[]
+// }
+
+export type TreeData = Replace<DefinitionNode, '_children' | 'children', TreeData[]>
 
 export const useMapData = () => {
   const definition = useMapStore(state => state.definition)
   const svgRef = useMapStore(state => state.svgRef)
 
   const [renderData, setRenderData] = useState<MapRenderData | null>(null)
+  // 监听renderData的变化 重新自动缩放
+  useEffect(() => {
+    zoomAndFit()
+  }, [renderData, svgRef])
+  // 导图的definition和svgRef变化时 更新渲染数据
   useEffect(() => {
     if (!definition || !svgRef) return
     setRenderData(getRenderData(definition, svgRef))
   }, [definition, svgRef])
+
   return { renderData }
 }
 
-const getRenderData = (
-  definition: MapDefinition,
-  svgRef: SVGSVGElement,
-): MapRenderData => {
+/**
+ * 计算得到最新的渲染数据
+ * @param definition
+ * @param svgRef
+ * @returns MapRenderData
+ */
+function getRenderData(definition: MapDefinition, svgRef: SVGSVGElement): MapRenderData {
   // 1. 转换 MapDefinition => TreeData
   const treeData = transform(definition)
-  // 2. 计算 TreeData => RenderData
-  const hierarchyData = hierarchy(treeData)
+  // 2. 计算每个节点的位置&尺寸 TreeData => RenderData
   const logicTree = new LogicTree(svgRef)
-  // 3. 更新store
-  return logicTree.create(hierarchyData)
+  return logicTree.create(treeData)
 }
+
 /**
  * 平铺数据转为树形数据
  * @param definition MapDefinition
@@ -37,11 +53,16 @@ const getRenderData = (
  */
 function transform(definition: MapDefinition): TreeData {
   const cloned = simpleDeepClone<MapDefinition>(definition)
-  const treeData = recursionTransform(cloned)
-  console.log('transform treeData > ', treeData)
-  return treeData
+  return recursionTransform(cloned)
 }
 
+/**
+ * 递归 + 前序遍历 转换
+ * @param definition 转换数据源
+ * @param rootId 当前节点ID
+ * @param level 当前层级
+ * @returns
+ */
 function recursionTransform(definition: MapDefinition, rootId = 'map-root', level = 0) {
   const definitionNode = definition[rootId]
   const { _children, children } = definitionNode

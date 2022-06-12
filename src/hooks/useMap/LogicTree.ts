@@ -1,8 +1,8 @@
-import { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
+import { hierarchy, HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import { select } from 'd3-selection'
 import { Link, linkHorizontal } from 'd3-shape'
 
-import { TreeData } from '@/store/useMapStore'
+import { TreeData } from './index'
 export type ExtraNodeInfo = {
   multiline: string[]
   ch: number
@@ -78,9 +78,14 @@ export class LogicTree {
       .y(d => d.y)
   }
 
-  create(root: HierarchyNode<TreeData>): MapRenderData {
+  create(data: TreeData): MapRenderData {
+    // 1. 创建一个hierarchy化的 root node
+    const root = hierarchy(data)
+    // 2. 计算节点尺寸
     this.measureWidthAndHeight(root as MapRenderNode)
+    // 2. 计算节点位置
     this.calculateXY(root as MapRenderNode)
+    // 3. 计算节点间连线数据
     const path = this.calculatePath(root as MapRenderNode)
     return {
       path,
@@ -89,7 +94,7 @@ export class LogicTree {
   }
 
   measureWidthAndHeight(root: MapRenderNode) {
-    // 后续遍历 初步计算 父依赖于子
+    // 后序遍历 父依赖于子
     root.eachAfter((node: MapRenderNode) => {
       this.measureImageSize(node)
       this.measureTextSize(node)
