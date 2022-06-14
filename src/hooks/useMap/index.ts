@@ -53,6 +53,7 @@ function getRenderData(definition: MapDefinition, svgRef: SVGSVGElement): MapRen
  */
 function transform(definition: MapDefinition): TreeData {
   const cloned = simpleDeepClone<MapDefinition>(definition)
+  // cycleTrans(cloned)
   return recursionTransform(cloned)
 }
 
@@ -86,3 +87,31 @@ function recursionTransform(definition: MapDefinition, rootId = 'map-root', leve
   }
   return root
 }
+
+/**
+ * 非递归 循环改进版
+ * TODO 还有细节需要完善
+ * @param definition
+ */
+// function cycleTrans(definition: MapDefinition) {
+//   console.log(definition)
+//   for (const id of Object.keys(definition)) {
+//     const node = definition[id]
+//     const { parent } = node
+//     if (parent === '-1') continue
+//     const pNode = definition[parent]
+//     if (pNode.children.includes(id)) {
+//       if (pNode.children_o) {
+//         pNode.children_o.push(node)
+//       } else {
+//         pNode.children_o = [node]
+//       }
+//     } else {
+//       if (pNode._children_o) {
+//         pNode._children_o.push(node)
+//       } else {
+//         pNode._children_o = [node]
+//       }
+//     }
+//   }
+// }

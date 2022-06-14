@@ -108,7 +108,6 @@ export class LogicTree {
     if (imgInfo) {
       node.iw = imgInfo.width
       node.ih = imgInfo.height
-      console.log(node.ih)
     } else {
       node.iw = 0
       node.ih = 0

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import MindMap from '@/components/MindMap'
 import useMapStore from '@/store/useMapStore'
+import useWebsiteStore from '@/store/website'
 
 import styles from './index.module.less'
 
@@ -15,12 +16,14 @@ enum PAGE_STATUS {
 
 function Edit() {
   const params = useParams<{ id: string }>()
-  const fetchMap = useMapStore(state => state.fetchMap)
   const map = useMapStore(state => state.map)
+  const fetchMap = useMapStore(state => state.fetchMap)
+  const fetchAllStyle = useWebsiteStore(state => state.fetchAllStyle)
 
   const [pageStatus, setPageStatus] = useState<PAGE_STATUS>(PAGE_STATUS.LOADING)
 
   useEffect(() => {
+    fetchAllStyle()
     if (params.id) {
       fetchMap(params.id)
       setPageStatus(PAGE_STATUS.NORMAL)

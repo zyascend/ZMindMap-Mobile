@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useMapData } from '@/hooks/useMap'
 import { MapRenderNode } from '@/hooks/useMap/LogicTree'
+import useStyle from '@/hooks/useStyle'
 import useMapStore from '@/store/useMapStore'
 
 import styles from './index.module.less'
@@ -9,11 +10,16 @@ import styles from './index.module.less'
 const MindMap: React.FC = () => {
   const setSvgRef = useMapStore(state => state.setSvgRef)
   const { renderData } = useMapData()
+  const { styleData } = useStyle()
   // TODO renderData 为空时 显示Loading状态
-  // if (!renderData) return <loading />
+  // if (!renderData || !styleData) return <loading />
   return (
     <div className={styles.mapContainer}>
-      <svg className={styles.mainSvg} ref={setSvgRef} id="mainSvg">
+      <svg
+        className={styles.mainSvg}
+        ref={setSvgRef}
+        id="mainSvg"
+        style={styleData?.svgStyle}>
         <g id="mainG">
           {renderPath()}
           {renderInfo()}
@@ -24,11 +30,12 @@ const MindMap: React.FC = () => {
   // 渲染节点间的连线
   function renderPath() {
     const paths = renderData?.path
-    if (!paths || !paths.length) return
+    const style = styleData?.pathStyle
+    if (!paths || !paths.length || !style) return
     return (
       <g>
         {paths.map(path => (
-          <path key={path.id} d={path.data}></path>
+          <path key={path.id} d={path.data} style={style}></path>
         ))}
       </g>
     )
@@ -50,8 +57,8 @@ const MindMap: React.FC = () => {
       </g>
     ))
   }
-  // 渲染节点背景方块
-  function renderMainRect(node: MapRenderNode) {
+  // 渲染节点外边框
+  function renderOutLineRect(node: MapRenderNode) {
     return (
       <rect
         x={node.outLineOffset}
@@ -64,8 +71,9 @@ const MindMap: React.FC = () => {
       />
     )
   }
-  // 渲染节点外边框
-  function renderOutLineRect(node: MapRenderNode) {
+  // 渲染节点背景方块
+  function renderMainRect(node: MapRenderNode) {
+    const style = styleData!.rectStyle
     return (
       <rect
         x="0"
@@ -74,11 +82,13 @@ const MindMap: React.FC = () => {
         ry={node.rectRadius}
         width={node.cw}
         height={node.ch}
+        style={style(node)}
       />
     )
   }
   // 渲染节点主图
   function renderMainImg(node: MapRenderNode) {
+    // const style = styleData!.imageStyle
     if (!node.iw) return
     return (
       <image
@@ -109,18 +119,16 @@ const MindMap: React.FC = () => {
   }
   // 渲染节点的文字
   function renderText(node: MapRenderNode) {
+    const getTextStyle = styleData!.textStyle
+    const textStyle = getTextStyle(node)
     return (
       <text
+        style={textStyle}
         transform={`translate(${node.tx},${node.ty})`}
         width={node.tw}
         height={node.th}>
         {node.multiline.map(line => (
-          <tspan
-            key={line}
-            x="0"
-            dy={node.tspanDy}
-            // fill="allStyles.textStyle(node).color"
-          >
+          <tspan key={line} x="0" dy={node.tspanDy} fill={textStyle.color}>
             {line}
           </tspan>
         ))}

@@ -5,12 +5,17 @@ import useHttp from '@/hooks/useHttp'
 import useUserStore from '@/store/useUserStore'
 import API from '@/utils/api'
 
+export interface MapStyle {
+  mapStyleId: string
+  colorId: string
+}
 export interface MapRes {
   directory: Array<{ name: string; id: string }>
   _id: string
   docId: string
   name: string
   role: number
+  styles: MapStyle
   definition: string
   baseVersion: string
 }
@@ -18,6 +23,8 @@ export interface MapRes {
 export interface DefinitionNode {
   _children: string[]
   children: string[]
+  _children_o?: DefinitionNode[]
+  children_o?: DefinitionNode[]
   collapsed: boolean
   html: string
   id: string

@@ -13,4 +13,6 @@ export default {
   setDoc: 'docs/setDoc',
   setDocContent: 'docs/setDocContent',
   remove: 'docs/remove',
+
+  getStyles: 'styles',
 }
