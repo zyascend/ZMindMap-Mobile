@@ -1,39 +1,47 @@
 import { SafeArea } from 'antd-mobile'
-import React from 'react'
+import React, { memo } from 'react'
 
 import SvgIcon from '@/components/SvgIcon'
 
 import styles from './index.module.less'
 
-export interface Header {
-  title: string
-  showBack?: boolean
-  onMoreClick: () => void
+export interface HeaderAction {
+  icon: string
+  clickFc: () => void
 }
 
-export const HomeHeader: React.FC<Header> = ({
-  title,
-  showBack = false,
-  onMoreClick,
-}) => {
+export interface Header {
+  leftActions?: Array<HeaderAction>
+  rightActions?: Array<HeaderAction>
+  title: string
+}
+
+const PageHeader: React.FC<Header> = ({ title, leftActions, rightActions }) => {
+  console.log('PageHeader rendered')
   return (
     <div className={styles.header}>
       <SafeArea position="top" />
       <div className={styles.headerContent}>
-        <div
-          aria-hidden="true"
-          className={`${styles.icon} ${showBack ? '' : styles.hidden}`}
-          onClick={goBack}>
-          <SvgIcon name="arrow-left" />
-        </div>
+        {renderAction(leftActions)}
         <h1>{title}</h1>
-        <div aria-hidden="true" className={styles.icon} onClick={onMoreClick}>
-          <SvgIcon name="more" />
-        </div>
+        {renderAction(rightActions)}
       </div>
     </div>
   )
+  function renderAction(actions: HeaderAction[] | undefined) {
+    if (!actions || !actions.length) return
+    return actions.map(action => (
+      <div
+        aria-hidden="true"
+        className={styles.icon}
+        key={action.icon}
+        onClick={action.clickFc}>
+        <SvgIcon name={action.icon} />
+      </div>
+    ))
+  }
 }
-function goBack() {
-  history.go(-1)
-}
+// function goBack() {
+//   history.go(-1)
+// }
+export default memo(PageHeader)

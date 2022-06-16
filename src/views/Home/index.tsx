@@ -1,10 +1,10 @@
 import { PullToRefresh } from 'antd-mobile'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import DocItem from '@/components/DocListItem'
 import { FullPageEmpty } from '@/components/FullPageFallback'
-import { HomeHeader } from '@/components/Headers'
+import PageHeader, { HeaderAction } from '@/components/Headers'
 import useDocStore, { Doc } from '@/store/useDocStore'
 
 import styles from './index.module.less'
@@ -32,9 +32,17 @@ function Home() {
     setTitle(getFolderNameById(params?.id || '0'))
   }, [docs, params])
 
+  // useRef保证在每一次渲染headerActions都是初始值 不会触发PageHeader组件的重新渲染
+  const headerActions = useRef<HeaderAction[]>([
+    {
+      icon: 'more',
+      clickFc: onMoreAction,
+    },
+  ])
+
   return (
     <div className={styles.main}>
-      <HomeHeader title={title} showBack={!!params?.id} onMoreClick={onMoreAction} />
+      <PageHeader title={title} rightActions={headerActions.current} />
       <PullToRefresh onRefresh={fetchAllDocs}>
         <div className={styles.listContainer}>{renderDocs()}</div>
       </PullToRefresh>
