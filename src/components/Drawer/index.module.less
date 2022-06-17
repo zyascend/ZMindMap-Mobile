@@ -1,0 +1,45 @@
+.drawerWarp {
+  position: absolute;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  .drawerMask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: all 0.3s;
+  }
+
+  .drawerContent {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    // padding: 16px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+    .titleDrawer {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #000000d9;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .closeDrawerBtn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding-left: 16px;
+      font-size: 16px;
+      color: #ccc;
+      cursor: pointer;
+    }
+  }
+
+  .closeDrawer {
+    transform: translateX(100%);
+  }
+}
