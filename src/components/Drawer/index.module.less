@@ -1,8 +1,10 @@
-.drawerWarp {
+.drawerOpen, .drawerClose {
   position: absolute;
   top: 0;
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
+  opacity: 1;
   .drawerMask {
     position: absolute;
     top: 0;
@@ -12,15 +14,13 @@
     background-color: rgba(0, 0, 0, 0.5);
     transition: all 0.3s;
   }
-
   .drawerContent {
     position: absolute;
     top: 0;
     height: 100%;
-    // padding: 16px;
     background-color: #fff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s;
+    transition: all 0.3s ease-in-out;
     .titleDrawer {
       padding: 16px;
       font-size: 16px;
@@ -38,8 +38,7 @@
       cursor: pointer;
     }
   }
-
-  .closeDrawer {
-    transform: translateX(100%);
-  }
+}
+.drawerClose {
+  opacity: 0;
 }

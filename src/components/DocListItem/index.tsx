@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 import SvgIcon from '@/components/SvgIcon'
@@ -28,4 +28,4 @@ const DocItem: React.FC<{ doc: Doc }> = ({ doc }) => {
   )
 }
 
-export default DocItem
+export default memo(DocItem)

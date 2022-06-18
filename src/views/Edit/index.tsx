@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Drawer } from '@/components/Drawer'
 import PageHeader, { HeaderAction } from '@/components/Headers'
 import MindMap from '@/components/MindMap'
+import useAsyncEffect from '@/hooks/useAsyncEffect'
 import useMapStore from '@/store/useMapStore'
 import useWebsiteStore from '@/store/website'
 
@@ -22,7 +23,7 @@ function Edit() {
   const fetchAllStyle = useWebsiteStore(state => state.fetchAllStyle)
 
   const [pageStatus, setPageStatus] = useState<PAGE_STATUS>(PAGE_STATUS.LOADING)
-  const [openDrawer, setOpenDrawer] = useState<boolean>(true)
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false)
 
   const leftActions: HeaderAction[] = [
     { icon: 'hamberger', clickFc: () => setOpenDrawer(true) },
@@ -33,10 +34,10 @@ function Edit() {
     { icon: 'more', clickFc: () => console.log('more click') },
   ]
 
-  useEffect(() => {
-    fetchAllStyle()
+  useAsyncEffect(async () => {
+    await fetchAllStyle()
     if (params.id) {
-      fetchMap(params.id)
+      await fetchMap(params.id)
       setPageStatus(PAGE_STATUS.NORMAL)
     } else {
       setPageStatus(PAGE_STATUS.ERROR)
@@ -54,7 +55,7 @@ function Edit() {
         title="全部文档"
         visible={openDrawer}
         onClose={() => setOpenDrawer(false)}
-        placement="right">
+        placement="left">
         <div>drawer</div>
       </Drawer>
       {renderContent()}

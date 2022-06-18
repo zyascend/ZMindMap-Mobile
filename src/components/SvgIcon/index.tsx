@@ -5,7 +5,8 @@ type SvgIcon = {
   name: string
   className?: string
 }
-const DocItem: React.FC<SvgIcon> = ({ name, className }) => {
+const SvgIcon: React.FC<SvgIcon> = ({ name, className }) => {
+  console.log('【SvgIcon rendered】')
   return (
     <svg aria-hidden="true" className={`svg-icon ${className}`}>
       <use xlinkHref={`#icon-${name}`} />
@@ -13,4 +14,4 @@ const DocItem: React.FC<SvgIcon> = ({ name, className }) => {
   )
 }
 
-export default DocItem
+export default SvgIcon

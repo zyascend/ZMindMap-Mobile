@@ -13,7 +13,6 @@
  *  drawerStyle 能自定义抽屉弹出层样式
  */
 
-import classnames from 'classnames'
 import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -42,7 +41,6 @@ export const Drawer: React.FC<DrawerProps> = props => {
     closable = true,
     width = 300,
     onClose,
-    zIndex = 1000,
     placement = 'right',
     mask = true,
     maskClosable = true,
@@ -84,12 +82,8 @@ export const Drawer: React.FC<DrawerProps> = props => {
 
   const drawerDom = (
     <div
-      className={styles.drawerWarp}
-      style={{
-        width: drawerVisible ? '100%' : '0',
-        zIndex,
-        position: container ? 'absolute' : 'fixed',
-      }}>
+      className={drawerVisible ? styles.drawerOpen : styles.drawerClose}
+      style={{ position: container ? 'absolute' : 'fixed' }}>
       {mask && (
         <div
           aria-hidden="true"
@@ -98,10 +92,7 @@ export const Drawer: React.FC<DrawerProps> = props => {
           onClick={maskClosable ? handleClose : undefined}></div>
       )}
       <div
-        className={classnames(
-          styles.drawerContent,
-          !drawerVisible ? styles.closeDrawer : '',
-        )}
+        className={styles.drawerContent}
         style={{
           width,
           [placement]: 0,

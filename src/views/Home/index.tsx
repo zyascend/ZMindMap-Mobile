@@ -1,37 +1,15 @@
 import { PullToRefresh } from 'antd-mobile'
-import React, { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useRef } from 'react'
 
 import DocItem from '@/components/DocListItem'
 import { FullPageEmpty } from '@/components/FullPageFallback'
 import PageHeader, { HeaderAction } from '@/components/Headers'
-import useDocStore, { Doc } from '@/store/useDocStore'
+import useDocList from '@/hooks/useDocList'
 
 import styles from './index.module.less'
-type FolderParams = {
-  id: string
-}
+
 function Home() {
-  const params = useParams<FolderParams>()
-
-  const getDocsById = useDocStore(state => state.getDocsById)
-  const getFolderNameById = useDocStore(state => state.getFolderNameById)
-  const fetchAllDocs = useDocStore(state => state.fetchAllDocs)
-  const docs = useDocStore(state => state.docs)
-
-  const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(
-    getDocsById(params?.id || '0'),
-  )
-  const [title, setTitle] = useState<string>('所有文档')
-
-  useEffect(() => {
-    fetchAllDocs()
-  }, [])
-  useEffect(() => {
-    setDocsToRender(getDocsById(params?.id || '0'))
-    setTitle(getFolderNameById(params?.id || '0'))
-  }, [docs, params])
-
+  const { docsToRender, title, fetchAllDocs } = useDocList()
   // useRef保证在每一次渲染headerActions都是初始值 不会触发PageHeader组件的重新渲染
   const headerActions = useRef<HeaderAction[]>([
     {
@@ -39,7 +17,6 @@ function Home() {
       clickFc: onMoreAction,
     },
   ])
-
   return (
     <div className={styles.main}>
       <PageHeader title={title} rightActions={headerActions.current} />
