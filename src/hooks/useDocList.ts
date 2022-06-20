@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom'
 import useAsyncEffect from '@/hooks/useAsyncEffect'
 import useDocStore, { Doc } from '@/store/useDocStore'
 
-type FolderParams = {
-  id: string
-}
-
+/**
+ * 首页渲染的doc列表
+ * @returns { 待渲染的文档列表，当前文档文件夹名，刷新文档方法 }
+ */
 export default function useDocList() {
-  const params = useParams<FolderParams>()
+  const params = useParams<{ id: string }>()
 
   const docs = useDocStore(state => state.docs)
   const getDocsById = useDocStore(state => state.getDocsById)
@@ -25,6 +25,7 @@ export default function useDocList() {
     await fetchAllDocs()
   }, [])
   useEffect(() => {
+    // 监听params.id 从store拿id对应的文档
     setDocsToRender(getDocsById(params?.id || '0'))
     setTitle(getFolderNameById(params?.id || '0'))
   }, [docs, params])

@@ -5,7 +5,8 @@ function useDebounce<T>(value: T, delay?: number): T {
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedValue(value), delay || 500)
-
+    // React会在执行当前effect之前对上一个effect进行清除
+    // https://react.docschina.org/docs/hooks-effect.html
     return () => {
       clearTimeout(timer)
     }

@@ -26,7 +26,7 @@ interface DocStoreProps {
   getDocsById: (folderId: string) => Doc[] | undefined
   getDocsByDate: () => Doc[] | undefined
   getFolderNameById: (folderId: string) => string
-  fetchAllDocs: () => Promise<any>
+  fetchAllDocs: () => Promise<void>
 }
 
 // 创建 store
