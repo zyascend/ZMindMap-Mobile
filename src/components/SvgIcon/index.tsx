@@ -1,6 +1,6 @@
 import './index.module.less'
 
-import React from 'react'
+import React, { memo } from 'react'
 type SvgIcon = {
   name: string
   className?: string
@@ -13,5 +13,4 @@ const SvgIcon: React.FC<SvgIcon> = ({ name, className }) => {
     </svg>
   )
 }
-
-export default SvgIcon
+export default memo(SvgIcon)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { Drawer } from '@/components/Drawer'
+// import { Drawer } from '@/components/Drawer'
 import PageHeader, { HeaderAction } from '@/components/Headers'
 import MindMap from '@/components/MindMap'
 import useAsyncEffect from '@/hooks/useAsyncEffect'
@@ -23,10 +23,10 @@ function Edit() {
   const fetchAllStyle = useWebsiteStore(state => state.fetchAllStyle)
 
   const [pageStatus, setPageStatus] = useState<PAGE_STATUS>(PAGE_STATUS.LOADING)
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false)
+  // const [openDrawer, setOpenDrawer] = useState<boolean>(false)
 
   const leftActions: HeaderAction[] = [
-    { icon: 'hamberger', clickFc: () => setOpenDrawer(true) },
+    { icon: 'hamberger', clickFc: () => console.log('hamber') },
     { icon: 'arrow-left', clickFc: () => history.go(-1) },
   ]
   const rightActions: HeaderAction[] = [
@@ -51,13 +51,6 @@ function Edit() {
         leftActions={leftActions}
         rightActions={rightActions}
       />
-      <Drawer
-        title="全部文档"
-        visible={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-        placement="left">
-        <div>drawer</div>
-      </Drawer>
       {renderContent()}
     </div>
   )

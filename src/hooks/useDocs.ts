@@ -8,7 +8,7 @@ import useDocStore, { Doc } from '@/store/useDocStore'
  * 首页渲染的doc列表
  * @returns { 待渲染的文档列表，当前文档文件夹名，刷新文档方法 }
  */
-export default function useDocList() {
+export function useDocList() {
   const params = useParams<{ id: string }>()
 
   const docs = useDocStore(state => state.docs)
@@ -31,4 +31,16 @@ export default function useDocList() {
   }, [docs, params])
 
   return { docsToRender, title, fetchAllDocs }
+}
+
+export function useRecentDocs() {
+  const docs = useDocStore(state => state.docs)
+  const getDocsByDate = useDocStore(state => state.getDocsByDate)
+  const fetchAllDocs = useDocStore(state => state.fetchAllDocs)
+  const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(getDocsByDate())
+  useEffect(() => {
+    // 监听params.id 从store拿id对应的文档
+    setDocsToRender(getDocsByDate())
+  }, [docs])
+  return { docsToRender, updateDocs: fetchAllDocs }
 }

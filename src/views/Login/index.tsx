@@ -22,7 +22,7 @@ function Login() {
         validateMessages={LoginConfigs.validateMessages}
         footer={
           <Button block type="submit" color="primary" size="large">
-            提交
+            登录
           </Button>
         }>
         <Form.Item name="email" label="邮箱" rules={LoginConfigs.rules.email}>

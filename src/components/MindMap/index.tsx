@@ -8,6 +8,7 @@ import useMapStore from '@/store/useMapStore'
 import styles from './index.module.less'
 
 const MindMap: React.FC = () => {
+  console.log('mindmap > render')
   const setSvgRef = useMapStore(state => state.setSvgRef)
   const { renderData } = useMapData()
   const { styleData } = useStyle()

@@ -1,26 +1,26 @@
 import { PullToRefresh } from 'antd-mobile'
-import React, { useState } from 'react'
+import React from 'react'
 
 import DocItem from '@/components/DocListItem'
-import useDocStore, { Doc } from '@/store/useDocStore'
+import { FullPageEmpty } from '@/components/FullPageFallback'
+import PageHeader from '@/components/Headers'
+import { useRecentDocs } from '@/hooks/useDocs'
 
 import styles from './index.module.less'
+
 function Recent() {
-  const getDocsByDate = useDocStore(state => state.getDocsByDate)
-  const [docsToRender, setDocsToRender] = useState<Doc[] | undefined>(getDocsByDate())
-
+  const { docsToRender, updateDocs } = useRecentDocs()
   return (
-    <PullToRefresh onRefresh={refreshDoc}>
-      <div className={styles.listContainer}>{renderDocs()}</div>
-    </PullToRefresh>
+    <div className={styles.main}>
+      <PageHeader title="最近编辑" />
+      <PullToRefresh onRefresh={updateDocs}>
+        <div className={styles.listContainer}>{renderDocs()}</div>
+      </PullToRefresh>
+    </div>
   )
-
   function renderDocs() {
-    if (!docsToRender || !docsToRender.length) return <div>暂无文档</div>
+    if (!docsToRender || !docsToRender.length) return <FullPageEmpty />
     return docsToRender.map(doc => <DocItem key={doc.id} doc={doc} />)
-  }
-  async function refreshDoc() {
-    setDocsToRender(getDocsByDate())
   }
 }
 export default Recent

@@ -4,7 +4,7 @@ import React, { useRef } from 'react'
 import DocItem from '@/components/DocListItem'
 import { FullPageEmpty } from '@/components/FullPageFallback'
 import PageHeader, { HeaderAction } from '@/components/Headers'
-import useDocList from '@/hooks/useDocList'
+import { useDocList } from '@/hooks/useDocs'
 
 import styles from './index.module.less'
 
