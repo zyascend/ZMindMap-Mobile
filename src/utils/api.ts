@@ -2,6 +2,7 @@ export default {
   register: '/users/register',
   login: '/users/login',
   editProfile: 'users/editProfile',
+  fetchUser: 'users/getUser',
 
   getCode: '/code/generate',
   getCodeStatus: '/code/getStatus',

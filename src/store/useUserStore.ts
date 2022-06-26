@@ -28,6 +28,8 @@ interface UserStoreProps {
   setUser: (user: User) => void
   login: (payload: LoginPayload) => Promise<boolean>
   logout: () => void
+  fetchUser: () => Promise<User | null>
+  confirmLogin: (qid: string) => Promise<boolean>
 }
 
 // 创建 store
@@ -62,6 +64,23 @@ const useStore = create<UserStoreProps>()(
         logout: () => {
           set({ user: undefined, token: undefined })
           localStorage.clear()
+        },
+        fetchUser: async () => {
+          if (!get().user) return null
+          const url = `${API.fetchUser}/${get().user?._id}`
+          const user = await useHttp<User>(url)
+          if (user) {
+            set({ user })
+            return user
+          }
+          return null
+        },
+        confirmLogin: async (qid: string) => {
+          // TODO
+          if (qid) {
+            return true
+          }
+          return false
         },
       }),
       { name: STORE_STORAGE_KEY },
