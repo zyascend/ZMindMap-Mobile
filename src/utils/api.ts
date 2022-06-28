@@ -6,6 +6,7 @@ export default {
 
   getCode: '/code/generate',
   getCodeStatus: '/code/getStatus',
+  setCodeStatus: '/code/setStatus',
 
   getCurrentUser: 'users/getUser',
   getAllDocs: 'docs/getAllDocs',

@@ -17,6 +17,7 @@ export interface LoginPayload {
     pwd: string
   }
 }
+export type CodeStatus = 'CONFIRMING' | 'CONFIRMED'
 const STORE_STORAGE_KEY = 's-user'
 /* eslint-disable no-unused-vars */
 interface UserStoreProps {
@@ -28,8 +29,7 @@ interface UserStoreProps {
   setUser: (user: User) => void
   login: (payload: LoginPayload) => Promise<boolean>
   logout: () => void
-  fetchUser: () => Promise<User | null>
-  confirmLogin: (qid: string) => Promise<boolean>
+  setQrcodeStatus: (qid: string | null, status: CodeStatus) => Promise<boolean>
 }
 
 // 创建 store
@@ -65,22 +65,18 @@ const useStore = create<UserStoreProps>()(
           set({ user: undefined, token: undefined })
           localStorage.clear()
         },
-        fetchUser: async () => {
-          if (!get().user) return null
-          const url = `${API.fetchUser}/${get().user?._id}`
-          const user = await useHttp<User>(url)
-          if (user) {
-            set({ user })
-            return user
-          }
-          return null
-        },
-        confirmLogin: async (qid: string) => {
-          // TODO
-          if (qid) {
-            return true
-          }
-          return false
+        setQrcodeStatus: async (qid, status) => {
+          if (!qid) return false
+          const res = await useHttp<{ qid: string; status: string }>(API.setCodeStatus, {
+            method: 'post',
+            data: {
+              qid,
+              status,
+              data: get().user,
+            },
+          })
+          if (!res) return false
+          return res.status === status
         },
       }),
       { name: STORE_STORAGE_KEY },
