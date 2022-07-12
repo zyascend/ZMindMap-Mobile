@@ -47,6 +47,8 @@
   yarn run dev
   ```
 ## 效果图
+| <img src="https://github.com/zyascend/ZMindMap-Mobile/blob/main/assets/preview1.png?raw=true" style="zoom:50%;" /> | <img src="https://github.com/zyascend/ZMindMap-Mobile/blob/main/assets/preview2.png?raw=true" style="zoom:50%;" /> |
+| :------------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
 
 
 ## Features

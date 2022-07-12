@@ -23,6 +23,15 @@ export default defineConfig({
     ],
   },
   css: {
+    preprocessorOptions: {
+      less: {
+        additionalData: `@import "${path.resolve(
+          __dirname,
+          'src/assets/style/global.module.less',
+        )}";`,
+        javascriptEnabled: true,
+      },
+    },
     postcss: {
       plugins: [
         postcsspxtoviewport({

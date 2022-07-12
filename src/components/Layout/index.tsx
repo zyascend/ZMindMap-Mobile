@@ -1,55 +1,59 @@
-import * as React from 'react'
-import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { TabBar } from 'antd-mobile'
+import { AppOutline, UnorderedListOutline, UserOutline } from 'antd-mobile-icons'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import useUserStore from '@/store/useUserStore'
 
 import styles from './index.module.less'
 
 function Layout() {
-  const naviList = [
+  const tabs = [
     {
-      to: '/app',
-      name: '文档',
+      key: '/app',
+      title: '文档',
+      icon: <UnorderedListOutline fontSize={23} />,
     },
     {
-      to: '/app/recent',
-      name: '捷径',
+      key: '/app/recent',
+      title: '捷径',
+      icon: <AppOutline fontSize={23} />,
     },
     {
-      to: '/app/user',
-      name: '个人',
+      key: '/app/user',
+      title: '个人',
+      icon: <UserOutline fontSize={23} />,
     },
   ]
   const token = useUserStore(state => state.token)
   const loc = useLocation()
-  let left = 0
-  for (let i = 0; i < naviList.length; i++) {
-    if (naviList[i].to === loc.pathname) {
-      left = i * 0.33 * 100
-      break
-    }
-  }
+  const navigate = useNavigate()
   if (!token) {
     return <Navigate to="/login" />
   }
   return (
     <div className={styles.main}>
-      <div className={styles.footer}>
-        <div className={styles.overlay} style={{ left: `${left}%` }}></div>
-        <div className={styles.navigations}>{renderNavigation()}</div>
-      </div>
+      <div className={styles.footer}>{renderNavigation()}</div>
       <Outlet />
     </div>
   )
   function renderNavigation() {
-    return naviList.map(navi => (
-      <Link
-        to={navi.to}
-        className={`${styles.tab} ${navi.to === loc.pathname ? styles.active : ''}`}
-        key={navi.name}>
-        {navi.name}
-      </Link>
-    ))
+    return (
+      <TabBar activeKey={loc.pathname} onChange={onTabChange} className={styles.tab}>
+        {tabs.map(item => (
+          <TabBar.Item
+            key={item.key}
+            icon={item.icon}
+            title={item.title}
+            className={styles.tabItem}
+          />
+        ))}
+      </TabBar>
+    )
+  }
+  function onTabChange(value: string) {
+    if (value !== loc.pathname) {
+      navigate(value)
+    }
   }
 }
 
