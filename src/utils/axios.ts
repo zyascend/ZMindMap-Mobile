@@ -27,15 +27,12 @@ const errorHandle = (status: number) => {
       console.log('资源不存在')
   }
 }
-
+const IS_PRD = import.meta.env.PROD
 // 创建axios实例
+const { apiCfg } = window.CFG
 const instance = axios.create({
   timeout: 1000 * 12,
-  // TODO 如何动态获取域名？
-  // baseURL: process.env.NODE_ENV === 'production' ? 'https://mapapi.kimjisoo.cn' : 'http://localhost:3003'
-  // eslint-disable-next-line no-undef
-  // baseURL: BASE_API_URL
-  baseURL: 'http://localhost:3003',
+  baseURL: IS_PRD ? apiCfg.prdHost : apiCfg.devHost,
 })
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'

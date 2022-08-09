@@ -1,8 +1,9 @@
-import { Button, Form, Input } from 'antd-mobile'
+import { Button, Form, Image, Input } from 'antd-mobile'
 import md5 from 'js-md5'
 import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
+import PIC_SUCCESS from '@/assets/icons/success.png'
 import useAsyncEffect from '@/hooks/useAsyncEffect'
 import useUserStore from '@/store/useUserStore'
 import { LoginConfigs } from '@/utils/config'
@@ -26,9 +27,8 @@ function Login() {
   const [status, setStatus] = useState<LOGIN_STATUS>(LOGIN_STATUS.LOGIN)
 
   useAsyncEffect(async () => {
-    const from = params.get('from')
     const qid = params.get('qid')
-    if (from === 'qrcode') {
+    if (qid) {
       // TODO 当前移动端的token是过期状态的怎么处理
       if (user) {
         setStatus(LOGIN_STATUS.LOGINED)
@@ -53,9 +53,20 @@ function Login() {
     if (!user) return null
     return (
       <div className={styles.userInfo}>
-        <img src={user.avatar} alt="头像"></img>
-        <span>{user.name}</span>
-        <Button block color="primary" size="large" onClick={onConfirm}>
+        <Image
+          src={user.avatar}
+          width={128}
+          height={128}
+          fit="cover"
+          style={{ borderRadius: 64 }}
+        />
+        <span className={styles.userName}>{user.name}</span>
+        <Button
+          block
+          className={styles.btn}
+          color="primary"
+          size="large"
+          onClick={onConfirm}>
           确认登录
         </Button>
       </div>
@@ -63,27 +74,53 @@ function Login() {
   }
 
   function renderConfirmed() {
-    return <div>登录成功</div>
+    return (
+      <div className={styles.comfirmed}>
+        <Image src={PIC_SUCCESS} fit="cover" />
+        <span className={styles.info}>登录成功</span>
+      </div>
+    )
   }
 
   function renderForm() {
     return (
-      <Form
-        name="form"
-        onFinish={onFinish}
-        validateMessages={LoginConfigs.validateMessages}
-        footer={
-          <Button block type="submit" color="primary" size="large">
-            登录
-          </Button>
-        }>
-        <Form.Item name="email" label="邮箱" rules={LoginConfigs.rules.email}>
-          <Input placeholder="请输入邮箱" clearable type="email" />
-        </Form.Item>
-        <Form.Item name="pwd" label="密码" rules={LoginConfigs.rules.pwd}>
-          <Input placeholder="请输入密码" clearable type="password" />
-        </Form.Item>
-      </Form>
+      <div className={styles.login}>
+        <h1 className={styles.loginTitle}>登录</h1>
+        <Form
+          name="form"
+          onFinish={onFinish}
+          validateMessages={LoginConfigs.validateMessages}
+          footer={
+            <Button block type="submit" color="primary" size="large">
+              登录
+            </Button>
+          }>
+          <Form.Item
+            className={styles.formItem}
+            name="email"
+            label="邮箱"
+            rules={LoginConfigs.rules.email}>
+            <Input
+              className={styles.input}
+              placeholder="请输入邮箱"
+              clearable
+              type="email"
+            />
+          </Form.Item>
+          <Form.Item
+            className={styles.formItem}
+            name="pwd"
+            label="密码"
+            rules={LoginConfigs.rules.pwd}>
+            <Input
+              className={styles.input}
+              placeholder="请输入密码"
+              clearable
+              type="password"
+            />
+          </Form.Item>
+        </Form>
+      </div>
     )
   }
 
@@ -97,11 +134,10 @@ function Login() {
       },
     })
     if (success) {
-      const from = params.get('from')
       const qid = params.get('qid')
       // 登录成功之后
       // 二维码登录的 -> 切换成确认登录状态
-      if (from === 'qrcode') {
+      if (qid) {
         setStatus(LOGIN_STATUS.LOGINED)
         await setQrcodeStatus(qid, 'CONFIRMING')
       } else {
