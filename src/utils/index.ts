@@ -1,3 +1,4 @@
+import { Toast } from 'antd-mobile'
 /**
  * 不包含循环引用的深度克隆
  * @param obj T
@@ -26,4 +27,14 @@ export function simpleOmit<T, R>(
     replacer = [...keys]
   }
   return JSON.parse(JSON.stringify(obj, replacer))
+}
+
+export function toast(
+  content: string,
+  position: 'top' | 'bottom' | 'center' | undefined = 'top',
+) {
+  Toast.show({
+    content,
+    position,
+  })
 }

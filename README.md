@@ -20,9 +20,13 @@
 
 ## 项目地址：
 
-预览地址(移动端)：[ZMind思维导图](https://map.kimjisoo.cn)
+预览地址：[ZMind思维导图](https://map.kimjisoo.cn)
 
-后台地址：[mind-map-node](https://github.com/zyascend/mind-map-node)  
+*注：请使用移动端设备或将浏览器切换为移动端模式*  
+
+PC端地址: [ZMindMap](https://github.com/zyascend/ZMindMap)  
+
+Node端地址：[mind-map-node](https://github.com/zyascend/mind-map-node)  
 
 ## 下载&安装
 

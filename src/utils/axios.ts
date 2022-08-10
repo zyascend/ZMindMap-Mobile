@@ -1,30 +1,30 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
 import useUserStore from '@/store/useUserStore'
+
+import { toast } from './index'
 /**
  * 请求失败后的错误统一处理
  * @param {Number} status 请求失败的状态码
  */
-const errorHandle = (status: number) => {
+const toLoginPage = () => {
+  localStorage.clear()
+  window.location.replace(`/login?redirect=${window.location.pathname}`)
+}
+
+const errorMap: Record<number, (msg?: HttpResError) => void> = {
+  401: toLoginPage,
+  403: () => toast('操作失败 无权限'),
+  404: (msg?: HttpResError) => {
+    toast(msg?.error || '【404】找不到资源')
+  },
+}
+const errorHandle = (status: number, msg: HttpResError) => {
   // 状态码判断
-  switch (status) {
-    // 401: 未登录状态，跳转登录页
-    case 401:
-      console.log('未登录')
-      window.location.replace('/login')
-      break
-    // 403 token过期
-    // 清除token并跳转登录页
-    case 403:
-      console.log('登录过期，请重新登录')
-      window.location.replace('/login')
-      break
-    // 404请求不存在
-    case 404:
-      console.log('资源不存在')
-      break
-    default:
-      console.log('资源不存在')
+  const handler = errorMap[status]
+  if (handler) handler(msg)
+  else {
+    toast('系统错误 请稍后再试')
   }
 }
 const IS_PRD = import.meta.env.PROD
@@ -54,11 +54,11 @@ instance.interceptors.response.use(
   // 请求成功
   res => (res.status === 200 ? Promise.resolve(res.data) : Promise.reject(res)),
   // 请求失败
-  (error: AxiosError) => {
+  (error: AxiosError<HttpResError>) => {
     const { response } = error
     if (response) {
       // 请求已发出，但是不在2xx的范围
-      errorHandle(response.status)
+      errorHandle(response.status, response.data)
       return Promise.reject(response)
     } else {
       // 处理断网的情况
